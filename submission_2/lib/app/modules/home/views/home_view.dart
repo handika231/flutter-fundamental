@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -22,99 +23,116 @@ class HomeView extends GetView<HomeController> {
   const HomeView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Restaurant App'),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        elevation: 2,
-        foregroundColor: Colors.black,
-      ),
-      body: FutureBuilder(
-        future: getData(),
+    return StreamBuilder<ConnectivityResult>(
+        stream: controller.connectivity.onConnectivityChanged,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          Restaurant? restaurant = snapshot.data;
-          print(restaurant);
           if (snapshot.data == null ||
-              snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
+              snapshot.data == ConnectivityResult.none) {
+            return const Scaffold(
+              body: Center(
+                child: Text('No Internet Connection'),
+              ),
             );
           } else {
-            return ListView.builder(
-              itemCount: restaurant?.restaurants?.length,
-              itemBuilder: (BuildContext context, int index) {
-                Restaurants? restaurants = restaurant?.restaurants?[index];
-                return GestureDetector(
-                  onTap: () {
-                    Get.toNamed(Routes.DETAIL, arguments: restaurants);
-                  },
-                  child: Container(
-                    color: Colors.grey[200],
-                    margin: const EdgeInsets.only(bottom: 16),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 4,
-                          child: Image.network(
-                            'https://restaurant-api.dicoding.dev/images/medium/${restaurants!.pictureId}',
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 12,
-                        ),
-                        Expanded(
-                          flex: 6,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Flexible(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      restaurants.name!,
-                                      style: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    const SizedBox(
-                                      height: 4,
-                                    ),
-                                    Text(
-                                      restaurants.city!,
-                                    ),
-                                  ],
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text('Restaurant App'),
+                centerTitle: true,
+                backgroundColor: Colors.white,
+                elevation: 2,
+                foregroundColor: Colors.black,
+              ),
+              body: FutureBuilder(
+                future: getData(),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  Restaurant? restaurant = snapshot.data;
+                  if (snapshot.data == null ||
+                      snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else {
+                    return ListView.builder(
+                      itemCount: restaurant?.restaurants?.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        Restaurants? restaurants =
+                            restaurant?.restaurants?[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Get.toNamed(Routes.DETAIL, arguments: restaurants);
+                          },
+                          child: Container(
+                            color: Colors.grey[200],
+                            margin: const EdgeInsets.only(bottom: 16),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 4,
+                                  child: Image.network(
+                                    'https://restaurant-api.dicoding.dev/images/medium/${restaurants!.pictureId}',
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
-                              ),
-                              Flexible(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 12),
+                                const SizedBox(
+                                  width: 12,
+                                ),
+                                Expanded(
+                                  flex: 6,
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      const Icon(Icons.star,
-                                          color: Colors.yellow),
-                                      Text(
-                                        '${restaurants.rating}',
+                                      Flexible(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              restaurants.name!,
+                                              style: const TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            const SizedBox(
+                                              height: 4,
+                                            ),
+                                            Text(
+                                              restaurants.city!,
+                                            ),
+                                          ],
+                                        ),
                                       ),
+                                      Flexible(
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 12),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              const Icon(Icons.star,
+                                                  color: Colors.yellow),
+                                              Text(
+                                                '${restaurants.rating}',
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      )
                                     ],
                                   ),
                                 ),
-                              )
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
+                        );
+                      },
+                    );
+                  }
+                },
+              ),
             );
           }
-        },
-      ),
-    );
+        });
   }
 }
