@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
@@ -38,8 +39,9 @@ class DetailView extends GetView<DetailController> {
                   expandedHeight: 250,
                   pinned: true,
                   flexibleSpace: FlexibleSpaceBar(
-                    background: Image.network(
-                      'https://restaurant-api.dicoding.dev/images/medium/${detail.restaurant!.pictureId}',
+                    background: CachedNetworkImage(
+                      imageUrl:
+                          'https://restaurant-api.dicoding.dev/images/medium/${detail.restaurant!.pictureId}',
                       fit: BoxFit.cover,
                     ),
                   ),

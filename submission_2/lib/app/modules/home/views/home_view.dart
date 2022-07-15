@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,6 +11,7 @@ import 'package:submission_2/app/routes/app_pages.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
+  const HomeView({Key? key}) : super(key: key);
   Future getData() async {
     Uri url = Uri.parse('https://restaurant-api.dicoding.dev/list');
     final response = await http.get(url);
@@ -20,7 +22,6 @@ class HomeView extends GetView<HomeController> {
     }
   }
 
-  const HomeView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<ConnectivityResult>(
@@ -36,14 +37,22 @@ class HomeView extends GetView<HomeController> {
           } else {
             return Scaffold(
               appBar: AppBar(
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      Get.toNamed(Routes.SEARCH);
+                    },
+                    icon: const Icon(Icons.search),
+                  ),
+                ],
                 title: const Text('Restaurant App'),
                 centerTitle: true,
                 backgroundColor: Colors.white,
                 elevation: 2,
                 foregroundColor: Colors.black,
               ),
-              body: FutureBuilder(
-                future: getData(),
+              body: FutureBuilder<Restaurant>(
+                future: controller.getDataApi(),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   Restaurant? restaurant = snapshot.data;
                   if (snapshot.data == null ||
@@ -57,6 +66,7 @@ class HomeView extends GetView<HomeController> {
                       itemBuilder: (BuildContext context, int index) {
                         Restaurants? restaurants =
                             restaurant?.restaurants?[index];
+
                         return GestureDetector(
                           onTap: () {
                             Get.toNamed(Routes.DETAIL, arguments: restaurants);
@@ -68,8 +78,9 @@ class HomeView extends GetView<HomeController> {
                               children: [
                                 Expanded(
                                   flex: 4,
-                                  child: Image.network(
-                                    'https://restaurant-api.dicoding.dev/images/medium/${restaurants!.pictureId}',
+                                  child: CachedNetworkImage(
+                                    imageUrl:
+                                        'https://restaurant-api.dicoding.dev/images/medium/${restaurants!.pictureId}',
                                     fit: BoxFit.cover,
                                   ),
                                 ),
