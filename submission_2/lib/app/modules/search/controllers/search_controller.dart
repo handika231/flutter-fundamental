@@ -6,8 +6,8 @@ import 'package:http/http.dart' as http;
 import 'package:submission_2/app/modules/home/model/restaurant/restaurant.dart';
 
 class SearchController extends GetxController {
-  List<Restaurants> searchResult = <Restaurants>[].obs;
-  var searchController = TextEditingController().obs;
+  List<Restaurants> searchResult = [];
+  var searchController = TextEditingController();
   Future<List<Restaurants>> getSeachApi() async {
     Uri uri = Uri.parse(
         'https://restaurant-api.dicoding.dev/search?q=${searchController.value.text}');
@@ -15,10 +15,5 @@ class SearchController extends GetxController {
     List data = json.decode(response.body)['restaurants'];
     searchResult = data.map((e) => Restaurants.fromJson(e)).toList();
     return searchResult;
-  }
-
-  void searchApi() {
-    getSeachApi();
-    update();
   }
 }
