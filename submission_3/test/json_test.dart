@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:submission_2/app/modules/detail/model/detail_model/restaurant.dart';
+import 'package:submission_2/app/modules/home/model/restaurant/restaurant.dart';
 
 void main() {
   final sampleTesting = {
@@ -13,10 +13,10 @@ void main() {
   };
 
   //create testing
-  test('Testing DetailModel', () {
-    final idResto = Restaurant.fromJson(sampleTesting).id;
-    final nameResto = Restaurant.fromJson(sampleTesting).name;
-    final descResto = Restaurant.fromJson(sampleTesting).description;
+  test('Testing Parsing Json', () {
+    final idResto = Restaurants.fromJson(sampleTesting).id;
+    final nameResto = Restaurants.fromJson(sampleTesting).name;
+    final descResto = Restaurants.fromJson(sampleTesting).description;
 
     expect(idResto, 'rqdv5juczeskfw1e867');
     expect(nameResto, 'Melting Pot');
