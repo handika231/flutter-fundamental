@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 
 import '../controllers/resto_favorite_controller.dart';
@@ -13,12 +12,7 @@ class RestoFavoriteView extends GetView<RestoFavoriteController> {
         title: const Text('RestoFavoriteView'),
         centerTitle: true,
       ),
-      body: Center(
-        child: Text(
-          'RestoFavoriteView is working',
-          style: TextStyle(fontSize: 20),
-        ),
-      ),
+      body: ListView(),
     );
   }
 }

@@ -29,6 +29,26 @@ class DetailView extends GetView<DetailController> {
                 SliverAppBar(
                   backgroundColor: Colors.white,
                   foregroundColor: Colors.black,
+                  actions: [
+                    CircleAvatar(
+                      backgroundColor: Colors.grey[100],
+                      child: Obx(
+                        () => IconButton(
+                          icon: controller.isFavorite.value
+                              ? const Icon(
+                                  Icons.favorite,
+                                  color: Colors.red,
+                                )
+                              : const Icon(
+                                  Icons.favorite_border,
+                                ),
+                          onPressed: () {
+                            controller.isFavorite.toggle();
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
                   title: Text(
                     '${data.name}',
                     style: const TextStyle(

@@ -14,4 +14,6 @@ class DetailController extends GetxController {
       throw Exception('Failed to load data');
     }
   }
+
+  var isFavorite = false.obs;
 }

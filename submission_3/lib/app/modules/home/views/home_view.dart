@@ -39,6 +39,12 @@ class HomeView extends GetView<HomeController> {
               appBar: AppBar(
                 actions: [
                   IconButton(
+                    icon: const Icon(Icons.bookmark_border),
+                    onPressed: () {
+                      Get.toNamed(Routes.RESTO_FAVORITE);
+                    },
+                  ),
+                  IconButton(
                     onPressed: () {
                       Get.toNamed(Routes.SEARCH);
                     },
