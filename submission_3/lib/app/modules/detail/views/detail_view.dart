@@ -39,10 +39,13 @@ class DetailView extends GetView<DetailController> {
                   expandedHeight: 250,
                   pinned: true,
                   flexibleSpace: FlexibleSpaceBar(
-                    background: CachedNetworkImage(
-                      imageUrl:
-                          'https://restaurant-api.dicoding.dev/images/medium/${detail.restaurant!.pictureId}',
-                      fit: BoxFit.cover,
+                    background: Hero(
+                      tag: '${data.id}',
+                      child: CachedNetworkImage(
+                        imageUrl:
+                            'https://restaurant-api.dicoding.dev/images/medium/${detail.restaurant!.pictureId}',
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),

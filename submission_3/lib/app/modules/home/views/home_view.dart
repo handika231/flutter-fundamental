@@ -78,10 +78,13 @@ class HomeView extends GetView<HomeController> {
                               children: [
                                 Expanded(
                                   flex: 4,
-                                  child: CachedNetworkImage(
-                                    imageUrl:
-                                        'https://restaurant-api.dicoding.dev/images/medium/${restaurants!.pictureId}',
-                                    fit: BoxFit.cover,
+                                  child: Hero(
+                                    tag: '${restaurants?.id}',
+                                    child: CachedNetworkImage(
+                                      imageUrl:
+                                          'https://restaurant-api.dicoding.dev/images/medium/${restaurants!.pictureId}',
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(
