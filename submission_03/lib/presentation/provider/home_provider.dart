@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:submission_03/domain/restaurant_list/restaurant_list.dart';
 
 import '../../common/enum.dart';
-import '../../data/api_service.dart';
+import '../../data/services/api_service.dart';
 
 class HomeProvider extends ChangeNotifier {
   final ApiService service;

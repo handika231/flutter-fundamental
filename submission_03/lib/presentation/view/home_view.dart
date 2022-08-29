@@ -12,9 +12,19 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<HomeProvider>(context, listen: false);
     return Scaffold(
+      appBar: _buildAppBar(),
       body: _buildList(),
+    );
+  }
+
+  _buildAppBar() {
+    return AppBar(
+      title: const Text('Restaurant App'),
+      centerTitle: true,
+      backgroundColor: Colors.white,
+      elevation: 2,
+      foregroundColor: Colors.black,
     );
   }
 

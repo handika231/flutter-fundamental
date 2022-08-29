@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:submission_03/domain/restaurant_detail/restaurant_detail.dart';
 
-import '../domain/restaurant_list/restaurant_list.dart';
+import '../../domain/restaurant_list/restaurant_list.dart';
 
 class ApiService {
   final Dio _dio = Dio();

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:submission_03/data/api_service.dart';
+import 'package:submission_03/common/navigation.dart';
+import 'package:submission_03/data/services/api_service.dart';
 import 'package:submission_03/presentation/provider/home_provider.dart';
+import 'package:submission_03/presentation/provider/schedule_provider.dart';
 
 import '../../presentation/view/view.dart';
 
@@ -14,10 +16,16 @@ class Application extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<HomeProvider>(
-          create: (context) => HomeProvider(service: ApiService()),
-        )
+          create: (context) => HomeProvider(
+            service: ApiService(),
+          ),
+        ),
+        ChangeNotifierProvider<ScheduleProvider>(
+          create: (context) => ScheduleProvider(),
+        ),
       ],
       child: MaterialApp(
+        navigatorKey: navigatorKey,
         builder: (context, child) {
           return ResponsiveWrapper.builder(
             child,
