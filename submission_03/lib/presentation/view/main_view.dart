@@ -33,15 +33,15 @@ class _MainViewState extends State<MainView> {
       label: 'Settings',
     ),
     const BottomNavigationBarItem(
-      icon: Icon(Icons.bookmark),
-      label: 'Bookmarks',
+      icon: Icon(Icons.favorite),
+      label: 'Favorite',
     ),
   ];
 
   final List<Widget> _children = [
     const HomeView(),
     const SettingView(),
-    const BookmarkView(),
+    const FavoriteView(),
   ];
   @override
   Widget build(BuildContext context) {

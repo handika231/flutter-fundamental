@@ -62,7 +62,7 @@ class Application extends StatelessWidget {
           MainView.routeName: (context) => const MainView(),
           HomeView.routeName: (context) => const HomeView(),
           SettingView.routeName: (context) => const SettingView(),
-          BookmarkView.routeName: (context) => const BookmarkView(),
+          FavoriteView.routeName: (context) => const FavoriteView(),
           DetailView.routeName: (context) => const DetailView(),
           SearchView.routeName: (context) => const SearchView(),
         },

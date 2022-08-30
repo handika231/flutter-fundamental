@@ -6,10 +6,10 @@ import 'package:submission_03/presentation/provider/database_provider.dart';
 
 import 'detail_view.dart';
 
-class BookmarkView extends StatelessWidget {
+class FavoriteView extends StatelessWidget {
   static const String routeName = '/bookmark';
 
-  const BookmarkView({Key? key}) : super(key: key);
+  const FavoriteView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -67,90 +67,118 @@ class HomeView extends StatelessWidget {
                 },
                 child: Consumer<DatabaseProvider>(
                   builder: (context, value, child) => FutureBuilder<bool>(
-                      future: value.isBookmarked(restaurant.id.toString()),
-                      builder: (context, snapshot) {
-                        var isBookmarked = snapshot.data ?? false;
-                        return Container(
-                          color: Colors.grey[200],
-                          margin: const EdgeInsets.only(bottom: 16),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 4,
-                                child: CachedNetworkImage(
-                                  imageUrl:
-                                      'https://restaurant-api.dicoding.dev/images/medium/${restaurant.pictureId}',
-                                  fit: BoxFit.cover,
-                                ),
+                    future: value.isBookmarked(restaurant.id.toString()),
+                    builder: (context, snapshot) {
+                      var isBookmarked = snapshot.data ?? false;
+                      return Container(
+                        color: Colors.grey[200],
+                        margin: const EdgeInsets.only(bottom: 16),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 4,
+                              child: CachedNetworkImage(
+                                imageUrl:
+                                    'https://restaurant-api.dicoding.dev/images/medium/${restaurant.pictureId}',
+                                fit: BoxFit.cover,
                               ),
-                              const SizedBox(
-                                width: 12,
-                              ),
-                              Expanded(
-                                flex: 4,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Flexible(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                            ),
+                            const SizedBox(
+                              width: 12,
+                            ),
+                            Expanded(
+                              flex: 4,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Flexible(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          restaurant.name.toString(),
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        const SizedBox(
+                                          height: 4,
+                                        ),
+                                        Text(
+                                          restaurant.city.toString(),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(right: 12),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
                                         children: [
-                                          Text(
-                                            restaurant.name.toString(),
-                                            style: const TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          const SizedBox(
-                                            height: 4,
+                                          const Icon(
+                                            Icons.star,
+                                            color: Colors.yellow,
                                           ),
                                           Text(
-                                            restaurant.city.toString(),
+                                            '${restaurant.rating}',
                                           ),
                                         ],
                                       ),
                                     ),
-                                    Flexible(
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 12),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: [
-                                            const Icon(
-                                              Icons.star,
-                                              color: Colors.yellow,
-                                            ),
-                                            Text(
-                                              '${restaurant.rating}',
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
+                                  )
+                                ],
                               ),
-                              isBookmarked
-                                  ? IconButton(
-                                      onPressed: () => value.removeBookmark(
+                            ),
+                            isBookmarked
+                                ? IconButton(
+                                    onPressed: () async {
+                                      value.removeBookmark(
                                         restaurant.id.toString(),
-                                      ),
-                                      icon: const Icon(Icons.bookmark),
-                                    )
-                                  : IconButton(
-                                      onPressed: () {
-                                        value.addBookmark(restaurant);
-                                      },
-                                      icon: const Icon(Icons.bookmark_border),
-                                    )
-                            ],
-                          ),
-                        );
-                      }),
+                                      );
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          behavior: SnackBarBehavior.floating,
+                                          duration: Duration(milliseconds: 300),
+                                          content: Text(
+                                            'Removed from favorite',
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    icon: const Icon(
+                                      Icons.favorite,
+                                      color: Colors.red,
+                                    ),
+                                  )
+                                : IconButton(
+                                    onPressed: () {
+                                      value.addBookmark(restaurant);
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          behavior: SnackBarBehavior.floating,
+                                          duration: Duration(milliseconds: 300),
+                                          content: Text(
+                                            'Add to favorite',
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    icon: const Icon(
+                                      Icons.favorite_border,
+                                      color: Colors.red,
+                                    ),
+                                  )
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
               );
             },
