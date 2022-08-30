@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:submission_03/common/navigation.dart';
+import 'package:submission_03/data/db/database_helper.dart';
 import 'package:submission_03/data/services/api_service.dart';
+import 'package:submission_03/presentation/provider/database_provider.dart';
 import 'package:submission_03/presentation/provider/home_provider.dart';
 import 'package:submission_03/presentation/provider/schedule_provider.dart';
 import 'package:submission_03/presentation/provider/search_provider.dart';
@@ -27,6 +29,11 @@ class Application extends StatelessWidget {
         ChangeNotifierProvider<SearchProvider>(
           create: (context) => SearchProvider(
             service: ApiService(),
+          ),
+        ),
+        ChangeNotifierProvider<DatabaseProvider>(
+          create: (context) => DatabaseProvider(
+            databaseHelper: DatabaseHelper(),
           ),
         ),
       ],

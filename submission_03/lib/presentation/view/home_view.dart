@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:submission_03/presentation/provider/database_provider.dart';
 import 'package:submission_03/presentation/view/detail_view.dart';
 import 'package:submission_03/presentation/view/search_view.dart';
 
@@ -58,71 +59,98 @@ class HomeView extends StatelessWidget {
               final restaurant = provider.restaurantList.restaurants![index];
               return GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, DetailView.routeName,
-                      arguments: restaurant);
+                  Navigator.pushNamed(
+                    context,
+                    DetailView.routeName,
+                    arguments: restaurant,
+                  );
                 },
-                child: Container(
-                  color: Colors.grey[200],
-                  margin: const EdgeInsets.only(bottom: 16),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 4,
-                        child: CachedNetworkImage(
-                          imageUrl:
-                              'https://restaurant-api.dicoding.dev/images/medium/${restaurant.pictureId}',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 12,
-                      ),
-                      Expanded(
-                        flex: 6,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Flexible(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    restaurant.name.toString(),
-                                    style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  const SizedBox(
-                                    height: 4,
-                                  ),
-                                  Text(
-                                    restaurant.city.toString(),
-                                  ),
-                                ],
+                child: Consumer<DatabaseProvider>(
+                  builder: (context, value, child) => FutureBuilder<bool>(
+                      future: value.isBookmarked(restaurant.id.toString()),
+                      builder: (context, snapshot) {
+                        var isBookmarked = snapshot.data ?? false;
+                        return Container(
+                          color: Colors.grey[200],
+                          margin: const EdgeInsets.only(bottom: 16),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                flex: 4,
+                                child: CachedNetworkImage(
+                                  imageUrl:
+                                      'https://restaurant-api.dicoding.dev/images/medium/${restaurant.pictureId}',
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                            ),
-                            Flexible(
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 12),
+                              const SizedBox(
+                                width: 12,
+                              ),
+                              Expanded(
+                                flex: 4,
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const Icon(
-                                      Icons.star,
-                                      color: Colors.yellow,
+                                    Flexible(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            restaurant.name.toString(),
+                                            style: const TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          const SizedBox(
+                                            height: 4,
+                                          ),
+                                          Text(
+                                            restaurant.city.toString(),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    Text(
-                                      '${restaurant.rating}',
-                                    ),
+                                    Flexible(
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 12),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            const Icon(
+                                              Icons.star,
+                                              color: Colors.yellow,
+                                            ),
+                                            Text(
+                                              '${restaurant.rating}',
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )
                                   ],
                                 ),
                               ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                              isBookmarked
+                                  ? IconButton(
+                                      onPressed: () => value.removeBookmark(
+                                        restaurant.id.toString(),
+                                      ),
+                                      icon: const Icon(Icons.bookmark),
+                                    )
+                                  : IconButton(
+                                      onPressed: () {
+                                        value.addBookmark(restaurant);
+                                      },
+                                      icon: const Icon(Icons.bookmark_border),
+                                    )
+                            ],
+                          ),
+                        );
+                      }),
                 ),
               );
             },
