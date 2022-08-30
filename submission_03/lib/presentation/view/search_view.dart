@@ -1,114 +1,175 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:submission_03/common/enum.dart';
-import 'package:submission_03/presentation/provider/search_provider.dart';
+import 'package:lottie/lottie.dart';
+import 'package:submission_03/common/navigation.dart';
+import 'package:submission_03/domain/restaurant_list/restaurant.dart';
+import 'package:submission_03/presentation/view/detail_view.dart';
 
-class SearchView extends StatelessWidget {
+class SearchView extends StatefulWidget {
   static const String routeName = '/search';
 
   const SearchView({Key? key}) : super(key: key);
 
   @override
+  State<SearchView> createState() => _SearchViewState();
+}
+
+class _SearchViewState extends State<SearchView> {
+  TextEditingController searchController = TextEditingController();
+  List<Restaurant> searchResult = [];
+  Future<List<Restaurant>> getSearchApi() async {
+    Dio dio = Dio();
+    Response response = await dio.get(
+        'https://restaurant-api.dicoding.dev/search?q=${searchController.text}');
+    List data = response.data['restaurants'];
+    searchResult = data.map((item) => Restaurant.fromJson(item)).toList();
+    return searchResult;
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<SearchProvider>(context);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         title: TextField(
           onChanged: (value) {
-            value = provider.searchController.text;
+            value = searchController.text;
+            setState(() {});
           },
-          controller: provider.searchController,
+          controller: searchController,
           onSubmitted: (value) {
-            provider.searchController.text = value;
+            searchController.text = value;
+            setState(() {});
           },
           decoration: const InputDecoration(
             border: OutlineInputBorder(),
             hintText: 'Search',
           ),
         ),
-        centerTitle: true,
       ),
-      body: Consumer<SearchProvider>(
-        builder: (context, state, child) {
-          if (state.data.isEmpty) {
+      body: FutureBuilder(
+        future: getSearchApi(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.data == null) {
             return const Center(
-              child: Text('No Data'),
+              child: Text(
+                'Tidak ada data',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
             );
-          } else if (state.state == ResultState.loading) {
-            return const CircularProgressIndicator();
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           } else {
-            return ListView.builder(
-              itemCount: state.data.length,
-              itemBuilder: (BuildContext context, int index) {
-                return GestureDetector(
-                  onTap: () {},
-                  child: Container(
-                    color: Colors.grey[200],
-                    margin: const EdgeInsets.only(bottom: 16),
-                    child: Row(
+            return searchResult.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Expanded(
-                          flex: 4,
-                          child: CachedNetworkImage(
-                            imageUrl:
-                                'https://restaurant-api.dicoding.dev/images/medium/${state.data[index].pictureId}',
-                            fit: BoxFit.cover,
+                        Lottie.asset(
+                          'assets/empty.json',
+                          width: double.infinity,
+                          height: 200,
+                        ),
+                        const Text('Tidak ada data yang dicari'),
+                      ],
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount: searchResult.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigation.intentWithData(
+                            DetailView.routeName,
+                            searchResult[index],
+                          );
+                        },
+                        child: Container(
+                          color: Colors.grey[200],
+                          margin: const EdgeInsets.only(
+                            bottom: 16,
+                            left: 16,
+                            right: 16,
+                            top: 12,
                           ),
-                        ),
-                        const SizedBox(
-                          width: 12,
-                        ),
-                        Expanded(
-                          flex: 6,
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Flexible(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                              Expanded(
+                                flex: 4,
+                                child: CachedNetworkImage(
+                                  imageUrl:
+                                      'https://restaurant-api.dicoding.dev/images/medium/${searchResult[index].pictureId}',
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 12,
+                              ),
+                              Expanded(
+                                flex: 6,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      '${state.data[index].name}',
-                                      style: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold),
+                                    Flexible(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '${searchResult[index].name}',
+                                            style: const TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          const SizedBox(
+                                            height: 4,
+                                          ),
+                                          Text(
+                                            '${searchResult[index].city}',
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    const SizedBox(
-                                      height: 4,
-                                    ),
-                                    Text(
-                                      '${state.data[index].city}',
-                                    ),
+                                    Flexible(
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 12),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            const Icon(Icons.star,
+                                                color: Colors.yellow),
+                                            Text(
+                                              '${searchResult[index].rating}',
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )
                                   ],
                                 ),
                               ),
-                              Flexible(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 12),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      const Icon(Icons.star,
-                                          color: Colors.yellow),
-                                      Text(
-                                        '${state.data[index].rating}',
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )
                             ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            );
+                      );
+                    },
+                  );
           }
         },
       ),

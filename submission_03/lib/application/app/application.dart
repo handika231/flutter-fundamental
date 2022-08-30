@@ -5,6 +5,7 @@ import 'package:submission_03/common/navigation.dart';
 import 'package:submission_03/data/services/api_service.dart';
 import 'package:submission_03/presentation/provider/home_provider.dart';
 import 'package:submission_03/presentation/provider/schedule_provider.dart';
+import 'package:submission_03/presentation/provider/search_provider.dart';
 
 import '../../presentation/view/view.dart';
 
@@ -22,6 +23,11 @@ class Application extends StatelessWidget {
         ),
         ChangeNotifierProvider<ScheduleProvider>(
           create: (context) => ScheduleProvider(),
+        ),
+        ChangeNotifierProvider<SearchProvider>(
+          create: (context) => SearchProvider(
+            service: ApiService(),
+          ),
         ),
       ],
       child: MaterialApp(

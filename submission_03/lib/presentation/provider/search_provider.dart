@@ -17,6 +17,12 @@ class SearchProvider extends ChangeNotifier {
   ResultState get state => _state;
   String get message => _message;
 
+  Future getSearchData() async {
+    final results = await service.getSearchApi(searchController.text);
+    notifyListeners();
+    return results;
+  }
+
   Future _fetchSearchList() async {
     try {
       _state = ResultState.loading;

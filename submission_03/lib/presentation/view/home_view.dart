@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:submission_03/presentation/view/detail_view.dart';
+import 'package:submission_03/presentation/view/search_view.dart';
 
 import '../../common/enum.dart';
 import '../provider/home_provider.dart';
@@ -13,13 +14,24 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(context),
       body: _buildList(),
     );
   }
 
-  _buildAppBar() {
+  _buildAppBar(BuildContext context) {
     return AppBar(
+      actions: [
+        IconButton(
+          onPressed: () {
+            Navigator.pushNamed(
+              context,
+              SearchView.routeName,
+            );
+          },
+          icon: const Icon(Icons.search),
+        ),
+      ],
       title: const Text('Restaurant App'),
       centerTitle: true,
       backgroundColor: Colors.white,
