@@ -5,7 +5,12 @@ import 'package:submission_03/domain/restaurant_list/restaurant.dart';
 import '../../domain/restaurant_list/restaurant_list.dart';
 
 class ApiService {
-  final Dio _dio = Dio();
+  Dio _dio = Dio();
+  ApiService([Dio? dio]) {
+    if (dio != null) {
+      _dio = dio;
+    }
+  }
   Future<RestaurantList> getRestaurantList() async {
     try {
       Response response =
