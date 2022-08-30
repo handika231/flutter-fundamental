@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:submission_03/domain/restaurant_detail/restaurant_detail.dart';
+import 'package:submission_03/domain/restaurant_list/restaurant.dart';
 
 import '../../domain/restaurant_list/restaurant_list.dart';
 
@@ -25,6 +26,19 @@ class ApiService {
       } else {
         throw Exception('Failed to load data');
       }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<List<Restaurant>> getSearchApi(String name) async {
+    try {
+      Response response =
+          await _dio.get('https://restaurant-api.dicoding.dev/search?q=$name');
+      List<Restaurant> results = response.data['restaurants']
+          .map((item) => Restaurant.fromJson(item))
+          .toList();
+      return results;
     } catch (e) {
       throw Exception(e.toString());
     }
